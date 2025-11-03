@@ -2,6 +2,11 @@ import React from "react";
 import { useState } from 'react';
 import { IDataContext, IDataRowContext, IMessageContext, useMessageHandler } from '../hooks/useMessageHandler';
 
+//Start a process flow in Universal with the provided parameters.
+export const parentStartProcessFlow = (processFlowId: string, params: any) => {
+  window.parent.postMessage({ type: 'startProcessFlow', processFlowId, dataParams: params }, '*');
+}
+
 export default function App() {
   const [universalState, setUniversalState] = useState<string>('regular');
   const [componentInitialized, setComponentInitialized] = useState(false);
