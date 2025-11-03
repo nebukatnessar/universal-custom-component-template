@@ -1,43 +1,6 @@
 import React from "react";
 import { useState } from 'react';
-import { useMessageHandler } from '../effects/useMessageHandler';
-
-
-const setThemeClasses = (theme: string) => {
-  document.body.classList.remove('light-theme', 'dark-theme');
-  if (theme === 'dark') {
-    document.body.classList.add('dark-theme');
-  } else {
-    document.body.classList.add('light-theme');
-  }
-};
-
-export interface IInitializationInfo {
-  Application: number;
-  ApplicationAlias: string;
-  ApplicationUrl: string;
-  MetaURL: string;
-  Entity: string;
-  IndiciumRootUrl: string;
-}
-
-
-export interface IDataContext {
-  EntityQueryPath: string;
-  DataSetLocation: string;
-  DataSet: Record<string, any>[];
-}
-
-export interface IDataRowContext {
-  DataRow: Record<string, any>;
-  DataRowLocation: string;
-}
-
-export interface IMessageContext extends IDataContext, IDataRowContext {
-  InitializationInfo: IInitializationInfo;
-  State: string;
-  Theme: string;
-}
+import { IDataContext, IDataRowContext, IMessageContext, useMessageHandler } from '../hooks/useMessageHandler';
 
 export default function App() {
   const [universalState, setUniversalState] = useState<string>('regular');
@@ -56,7 +19,6 @@ export default function App() {
     setDataContext,
     setDataRowContext,
     setTheme,
-    setThemeClasses,
     messageContext,
   });
 
@@ -86,12 +48,21 @@ export default function App() {
       <p>Hi Universal is in {universalState} state</p>
       <p>Current Theme: {theme}</p>
       <p>
-        Initialization Info: {initializationInfo.ApplicationAlias} - {initializationInfo.Entity}
+        Initialization Info: 
+        <ul>
+          <li>Application: {initializationInfo.Application}</li>
+          <li>Application Alias: {initializationInfo.ApplicationAlias}</li>
+          <li>Entity: {initializationInfo.Entity}</li>
+          <li>Meta URL: {initializationInfo.MetaURL}</li>
+          <li>Indicium Root URL: {initializationInfo.IndiciumRootUrl}</li>
+        </ul>
       </p>
-      <p>Data Context: {JSON.stringify(dataContext)}</p>
-      <p>Data Row Context: {JSON.stringify(dataRowContext)}</p>
 
+      <p>Data location: {dataRowContext.DataRowLocation}</p>
       <p>Dataset Location: {dataContext?.DataSetLocation}</p>
+
+      <p>Data Row: {JSON.stringify(dataRowContext.DataRow)}</p>
+
       <p>You can loop the DataSet array:</p>
       <ul>
         {dataContext?.DataSet.map((item, index) => (

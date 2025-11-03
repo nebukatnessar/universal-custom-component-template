@@ -1,11 +1,10 @@
 {
-  "name": "custom",
+  "name": "universal-custom-component-template",
   "version": "0.0.1",
   "license": "MIT",
   "scripts": {
     "dev": "vite",
-    "build": "yarn lint && vite build && node ./scripts/copy-build-to-network.js",
-    "preview": "vite preview",
+    "build": "yarn lint && vite build",
     "lint": "biome check",
     "test": "cross-env TZ=UTC node scripts/test.js --env=jsdom",
     "test-coverage": "cross-env TZ=UTC node scripts/test.js --env=jsdom --coverage --reporters=jest-junit --reporters=default --coverageReporters=cobertura --coverageReporters=html --coverageReporters=json-summary --coverageReporters=lcov"

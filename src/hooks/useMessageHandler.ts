@@ -1,5 +1,40 @@
 import { useEffect } from 'react';
-import { IMessageContext, IDataContext, IDataRowContext, IInitializationInfo } from '../components/App';
+
+const setThemeClasses = (theme: string) => {
+  document.body.classList.remove('light-theme', 'dark-theme');
+  if (theme === 'dark') {
+    document.body.classList.add('dark-theme');
+  } else {
+    document.body.classList.add('light-theme');
+  }
+};
+
+export interface IInitializationInfo {
+  Application: number;
+  ApplicationAlias: string;
+  ApplicationUrl: string;
+  MetaURL: string;
+  Entity: string;
+  IndiciumRootUrl: string;
+}
+
+
+export interface IDataContext {
+  EntityQueryPath: string;
+  DataSetLocation: string;
+  DataSet: Record<string, any>[];
+}
+
+export interface IDataRowContext {
+  DataRow: Record<string, any>;
+  DataRowLocation: string;
+}
+
+export interface IMessageContext extends IDataContext, IDataRowContext {
+  InitializationInfo: IInitializationInfo;
+  State: string;
+  Theme: string;
+}
 
 interface UseMessageHandlerProps {
   setUniversalState: (state: string) => void;
@@ -9,7 +44,6 @@ interface UseMessageHandlerProps {
   setDataContext: (context: IDataContext) => void;
   setDataRowContext: (context: IDataRowContext) => void;
   setTheme: (theme: string) => void;
-  setThemeClasses: (theme: string) => void;
   messageContext?: IMessageContext;
 }
 
@@ -21,7 +55,6 @@ export function useMessageHandler({
   setDataContext,
   setDataRowContext,
   setTheme,
-  setThemeClasses,
   messageContext,
 }: UseMessageHandlerProps) {
   useEffect(() => {
