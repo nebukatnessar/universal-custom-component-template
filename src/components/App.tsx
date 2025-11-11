@@ -1,11 +1,13 @@
 import React from "react";
 import { useState } from 'react';
 import { IDataContext, IDataRowContext, IMessageContext, useMessageHandler } from '../hooks/useMessageHandler';
+import { IEmployeePerformance, NineGrid } from "./NineGrid";
 
 //Start a process flow in Universal with the provided parameters.
 export const parentStartProcessFlow = (processFlowId: string, params: any) => {
   window.parent.postMessage({ type: 'startProcessFlow', processFlowId, dataParams: params }, '*');
 }
+
 
 export default function App() {
   const [universalState, setUniversalState] = useState<string>('regular');
@@ -50,30 +52,7 @@ export default function App() {
           aria-hidden="true"
         />
       )}
-      <p>Hi Universal is in {universalState} state</p>
-      <p>Current Theme: {theme}</p>
-      <p>
-        Initialization Info: 
-        <ul>
-          <li>Application: {initializationInfo.Application}</li>
-          <li>Application Alias: {initializationInfo.ApplicationAlias}</li>
-          <li>Entity: {initializationInfo.Entity}</li>
-          <li>Meta URL: {initializationInfo.MetaURL}</li>
-          <li>Indicium Root URL: {initializationInfo.IndiciumRootUrl}</li>
-        </ul>
-      </p>
-
-      <p>Data location: {dataRowContext.DataRowLocation}</p>
-      <p>Dataset Location: {dataContext?.DataSetLocation}</p>
-
-      <p>Data Row: {JSON.stringify(dataRowContext.DataRow)}</p>
-
-      <p>You can loop the DataSet array:</p>
-      <ul>
-        {dataContext?.DataSet.map((item, index) => (
-          <li key={index}>{JSON.stringify(item)}</li>
-        ))}
-      </ul>
+      <NineGrid employees={dataContext.DataSet as IEmployeePerformance[]} />
     </>
   )
 }
