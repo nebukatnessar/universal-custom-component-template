@@ -62,6 +62,7 @@ export function useMessageHandler({
       console.log('Received message:', event.data);
 
       if (!event.data) return;
+      
       const messageContext: IMessageContext = event.data;
       setMessageContext(messageContext);
 

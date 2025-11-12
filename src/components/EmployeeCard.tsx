@@ -1,13 +1,15 @@
 import { parentStartProcessFlow } from './App';
 import React from 'react';
 import { IEmployeePerformance } from './NineGrid';
+import { employeeCardStyle } from './styles';
 
 // Card for displaying an employee name
 interface EmployeeCardProps {
   employee: IEmployeePerformance;
+  isCurrent?: boolean;
 }
 
-const EmployeeCard: React.FC<EmployeeCardProps> = ({ employee }) => {
+const EmployeeCard: React.FC<EmployeeCardProps> = ({ employee, isCurrent }) => {
   const handleClick = () => {
     parentStartProcessFlow('employee_performance_set_row', {
       employee_id: employee.employee_id,
@@ -17,27 +19,17 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({ employee }) => {
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
     e.dataTransfer.setData('application/json', JSON.stringify({
-      employee_id: employee.employee_id,
-      year: employee.year,
+        employee_id: employee.employee_id,
+        year: employee.year,
     }));
   };
+
+  const currentStyle = isCurrent ? { border: '2px solid #1976d2' } : {};
 
   return (
     <div
       key={employee.employee_id}
-      style={{
-        marginBottom: '8px',
-        background: '#f8f9fa',
-        border: '1px solid #ddd',
-        borderRadius: '8px',
-        boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
-        padding: '8px 12px',
-        display: 'inline-block',
-        minWidth: '100px',
-        textAlign: 'center',
-        cursor: 'pointer',
-        userSelect: 'none',
-      }}
+      style={{ ...employeeCardStyle, ...currentStyle }}
       onClick={handleClick}
       title={`Start process for ${employee.first_name} ${employee.last_name}`}
       draggable

@@ -1,6 +1,7 @@
 
 import EmployeeCard from './EmployeeCard';
 import React from 'react';
+import { axisLabelStyle, employeeCardCellStyle, nineGridCellStyle, potentialAxisLabelStyle } from './styles';
 
 export interface IEmployeePerformance {
   employee_id: number;
@@ -25,11 +26,12 @@ export interface IEmployeePerformance {
 
 interface NineGridProps {
   employees: IEmployeePerformance[];
+  currentEmployeeId?: number;
   onDrop?: (employee_id: number, year: number, performance: number, potential: number) => void;
 }
 
 // 9-grid is a 3x3 grid based on potential (y) and performance (x)
-export const NineGrid: React.FC<NineGridProps> = ({ employees, onDrop }) => {
+export const NineGrid: React.FC<NineGridProps> = ({ employees, currentEmployeeId, onDrop }) => {
   // Create a 3x3 array for grid cells
   const grid: IEmployeePerformance[][][] = Array.from({ length: 3 }, () => Array.from({ length: 3 }, () => []));
 
@@ -38,22 +40,22 @@ export const NineGrid: React.FC<NineGridProps> = ({ employees, onDrop }) => {
     // Clamp values to 1-3
     const perf = Math.max(1, Math.min(3, emp.performance));
     const pot = Math.max(1, Math.min(3, emp.potential));
-    // Grid is [row][col] = [potential-1][performance-1]
-    grid[pot - 1][perf - 1].push(emp);
+    // Reverse potential axis: row 0 = potential 3, row 1 = potential 2, row 2 = potential 1
+    grid[3 - pot][perf - 1].push(emp);
   });
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
-      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: '100%' }}>
+    <div style={{ ...nineGridCellStyle, flexDirection: 'column'}}>
+      <div style={{ ...nineGridCellStyle, flexDirection: 'row' }}>
         {/* Vertical axis label */}
-        <div style={{ writingMode: 'vertical-rl', textAlign: 'center', fontWeight: 'bold', fontSize: '1.1em', marginRight: 8, display: 'flex', alignItems: 'center' }}>
+        <div style={potentialAxisLabelStyle}>
           Potential
         </div>
         <div style={{ flex: 1 }}>
           <table style={{ borderCollapse: 'collapse', width: '100%', tableLayout: 'fixed' }}>
             <thead>
               <tr>
-                <th colSpan={3} style={{ textAlign: 'center', fontWeight: 'bold', fontSize: '1.1em', padding: '8px 0' }}>Performance</th>
+                <th colSpan={3} style={{ ...axisLabelStyle, padding: '8px 0' }}>Performance</th>
               </tr>
             </thead>
             <tbody>
@@ -84,8 +86,8 @@ export const NineGrid: React.FC<NineGridProps> = ({ employees, onDrop }) => {
                       try {
                         const { employee_id, year } = JSON.parse(data);
                         if (onDrop) {
-                          // performance = colIdx+1, potential = rowIdx+1
-                          onDrop(employee_id, year, colIdx + 1, rowIdx + 1);
+                          // performance = colIdx+1, potential = 3-rowIdx
+                          onDrop(employee_id, year, colIdx + 1, 3 - rowIdx);
                         }
                       } catch {}
                     };
@@ -96,19 +98,15 @@ export const NineGrid: React.FC<NineGridProps> = ({ employees, onDrop }) => {
                       <td
                         key={colIdx}
                         style={{
+                          ...employeeCardCellStyle,
                           border: `2px solid ${borderColor}`,
                           background: cellColor,
-                          verticalAlign: 'top',
-                          width: '11%',
-                          height: '120px',
-                          padding: '4px',
-                          transition: 'background 0.2s',
                         }}
                         onDrop={handleDrop}
                         onDragOver={handleDragOver}
                       >
                         {cell.map(emp => (
-                          <EmployeeCard key={`${emp.employee_id}-${emp.year}`} employee={emp} />
+                          <EmployeeCard key={`${emp.employee_id}-${emp.year}`} employee={emp} isCurrent={emp.employee_id === currentEmployeeId} />
                         ))}
                       </td>
                     );
